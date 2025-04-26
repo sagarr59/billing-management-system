@@ -1,0 +1,7 @@
+{
+    "name": "ambience-infosys/invoice-generator",
+    "description": "Invoice Generator for Ambience Infosys",
+    "require": {
+        "dompdf/dompdf": "^3.1"
+    }
+}

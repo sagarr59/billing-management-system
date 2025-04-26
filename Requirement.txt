@@ -1,0 +1,10 @@
+1. Install Dependencies
+Run this command in your project folder:
+
+composer require dompdf/dompdf
+
+2. Create the Database
+Run the provided SQL schema in MySQL.
+
+3. Deploy the PHP script
+Save the invoice.php file and host it on a web server.
