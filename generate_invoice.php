@@ -94,11 +94,25 @@ function generatePDF($invoice_id) {
         $stmt->execute([':invoice_id' => $invoice_id]);
         $particulars = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        
+        // Prepare logo (embed as base64)
+        $logoPath = __DIR__ . '/ambienceLogo.jpg'; // Adjust if your logo file is elsewhere
+        if (file_exists($logoPath)) {
+            $logoData = base64_encode(file_get_contents($logoPath));
+            $logoSrc = 'data:image/jpeg;base64,' . $logoData;
+        } else {
+            $logoSrc = ''; // Or fallback to no logo
+        }
+
+
         // Prepare HTML content for PDF
+        
         $html = "
         <div style='text-align: center;'>
+            " . ($logoSrc ? "<img src='$logoSrc' alt='Company Logo' style='height: 80px; margin-bottom: 10px;'><br>" : "") . "
             <h2 style='margin: 0; font-size: 24px;'>Ambience Infosys Pvt. Ltd.</h2>
         </div>
+
         <div style='margin-top: 20px; width: 100%;'>
             <!-- Left Section (Ref No, PAN No, Client Name) -->
             <div style='display: inline-block; width: 48%; font-size: 14px; margin-top: 30px;'>
@@ -150,7 +164,7 @@ function generatePDF($invoice_id) {
         </div>
 
         <div style='margin-top: 30px;'>
-            <p><strong>In Words:</strong> " . convertNumberToWords($netAmount) . " only</p>
+            <p><strong>In Words:</strong> " . convertNumberToWords($netAmount) . "</p>
         </div>
 
         <div style='margin-top: 40px; text-align: right;'>

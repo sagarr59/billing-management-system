@@ -18,7 +18,7 @@ include('sidebar.php');
       margin: 0;
     }
 
-    /* Adjust if your sidebar is not fixed */
+    
     .main-content {
       padding: 30px 20px;
       transition: all 0.3s ease;
@@ -26,7 +26,7 @@ include('sidebar.php');
 
     @media (min-width: 768px) {
       .main-content {
-        margin-left: 20px; /* Match with actual sidebar width */
+        margin-left: 20px; 
       }
     }
 

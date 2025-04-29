@@ -102,7 +102,7 @@ function generatePDF($invoice_id) {
         </div>
 
         <div style='margin-top: 30px;'>
-            <p><strong>In Words:</strong> " . convertNumberToWords($netAmount) . " only</p>
+            <p><strong>In Words:</strong> " . convertNumberToWords($netAmount) . " </p>
         </div>
 
         <div style='margin-top: 40px; text-align: right;'>
@@ -126,7 +126,7 @@ function generatePDF($invoice_id) {
 
 // Function to convert number to words (for 'In Words' section)
 function convertNumberToWords($num) {
-    // Conversion logic (can be complex; I'll keep it simple)
+    // Conversion logic 
     $words = array(
         0 => 'Zero', 1 => 'One', 2 => 'Two', 3 => 'Three', 4 => 'Four', 5 => 'Five',
         6 => 'Six', 7 => 'Seven', 8 => 'Eight', 9 => 'Nine', 10 => 'Ten'
