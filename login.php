@@ -112,9 +112,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <input type="text" name="username" class="form-control" placeholder="Username" required autofocus>
       </div>
       <div class="mb-3 position-relative">
-        <i class="bi bi-lock-fill input-icon"></i>
-        <input type="password" name="password" class="form-control" placeholder="Password" required>
-      </div>
+  <i class="bi bi-lock-fill input-icon"></i>
+  <input type="password" name="password" class="form-control" placeholder="Password" id="password" required>
+  <button type="button" class="position-absolute end-0 top-50 translate-middle-y me-2 bg-transparent border-0" onclick="togglePassword()" style="z-index:2;">
+    <i class="bi bi-eye" id="toggleIcon"></i>
+  </button>
+</div>
+
+
       <button type="submit" class="btn btn-primary btn-login">Login</button>
     </form>
     <div class="text-center mt-3">
@@ -123,6 +128,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/
+bootstrap.bundle.min.js"></script>
+
+
+<script>
+function togglePassword() {
+  const passwordInput = document.getElementById('password');
+  const toggleIcon = document.getElementById('toggleIcon');
+  const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+  passwordInput.setAttribute('type', type);
+  toggleIcon.classList.toggle('bi-eye');
+  toggleIcon.classList.toggle('bi-eye-slash');
+}
+</script>
+
 </body>
 </html>

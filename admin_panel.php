@@ -89,6 +89,27 @@ $monthlyStmt->execute([$currentMonth]);
 $monthlyRevenue = $monthlyStmt->fetchColumn();
 $monthlyRevenue = $monthlyRevenue ?: 0;
 
+
+$monthlyLabels = [];
+$monthlyData = [];
+
+$dt = new DateTime('first day of this month');
+
+for ($i = 5; $i >= 0; $i--) {
+    $monthDt = clone $dt;
+    $monthDt->modify("-{$i} months");
+    $month = $monthDt->format('Y-m'); // For DB query
+    $label = $monthDt->format('M');   // Correct label like Jan, Feb, etc.
+
+    $stmt = $pdo->prepare("SELECT SUM(net_amount) as revenue FROM invoices WHERE DATE_FORMAT(issued_date, '%Y-%m') = ?");
+    $stmt->execute([$month]);
+    $revenue = $stmt->fetchColumn();
+
+    $monthlyLabels[] = $label;
+    $monthlyData[] = $revenue ?: 0;
+}
+
+
 // Top Client
 $topClientStmt = $pdo->query("SELECT client_name, COUNT(*) as invoice_count FROM invoices GROUP BY client_name ORDER BY invoice_count DESC LIMIT 1");
 $topClient = $topClientStmt->fetch(PDO::FETCH_ASSOC);
@@ -98,6 +119,8 @@ $topClient = $topClientStmt->fetch(PDO::FETCH_ASSOC);
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <title>Admin Panel | Ambience Infosys</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
@@ -197,6 +220,17 @@ $topClient = $topClientStmt->fetch(PDO::FETCH_ASSOC);
       </div>
     </div>
 
+
+
+    <!-- Revenue Chart -->
+<div class="card mb-4 shadow-sm">
+  <div class="card-body">
+    <h5 class="card-title">Monthly Revenue Overview</h5>
+    <canvas id="revenueChart" height="100"></canvas>
+  </div>
+</div>
+
+
     <!-- Invoices Table -->
     <div class="table-responsive">
       <table class="table table-hover align-middle mb-0">
@@ -271,5 +305,54 @@ $topClient = $topClientStmt->fetch(PDO::FETCH_ASSOC);
     new bootstrap.Modal(document.getElementById('deleteModal')).show();
   }
 </script>
+
+<script>
+  const monthlyLabels = <?= json_encode($monthlyLabels) ?>;
+  const monthlyData = <?= json_encode($monthlyData) ?>;
+</script>
+
+<script>
+  const ctx = document.getElementById('revenueChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: monthlyLabels,
+      datasets: [{
+        label: 'Revenue (Rs)',
+        data: monthlyData,
+        backgroundColor: '#0d6efd',
+        borderRadius: 10,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return 'Rs. ' + Number(context.parsed.y).toLocaleString();
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              return 'Rs. ' + value.toLocaleString();
+            }
+          }
+        }
+      }
+    }
+  });
+</script>
+
+
 </body>
 </html>
